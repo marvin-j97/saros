@@ -4,9 +4,6 @@
   "description": "CLI tool to count lines and other file statistics",
   "main": "dist/index",
   "bin": "dist/bin",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",
@@ -17,7 +14,10 @@
     "type": "git",
     "url": "git+https://github.com/dotvirus/saros.git"
   },
-  "keywords": [],
+  "keywords": [
+    "line counter",
+    "cli"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {

@@ -1,6 +1,8 @@
 import yargs from "yargs";
 
 export default yargs
+  .scriptName("saros")
+  .command("$0 <path>", "Count lines in path")
   .version("0.0.1")
   .array("ext")
   .boolean("recursive")

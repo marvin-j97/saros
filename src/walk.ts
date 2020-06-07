@@ -5,12 +5,7 @@ import { isFittingExtension } from "./utility";
 
 const { stat, readdir } = promises;
 
-export const EndWalk = Symbol();
-
-type FileCallback = (
-  err: Error | null,
-  path: string,
-) => Promise<typeof EndWalk | false>;
+type FileCallback = (err: Error | null, path: string) => Promise<boolean>;
 
 export interface IWalkOptions {
   root: string;
@@ -19,39 +14,65 @@ export interface IWalkOptions {
   extensions: string[];
 }
 
-export async function walk(opts: IWalkOptions): Promise<void> {
-  const { root, cb, recursive, extensions } = opts;
-  const fileStack = new Stack<string>();
-  fileStack.push(root);
+interface IDirectoryListing {
+  files: string[];
+  folders: string[];
+}
 
-  while (fileStack.peek()) {
-    const top = fileStack.pop();
-    if (!top) return;
+async function readdirSplit(
+  root: string,
+  paths: string[],
+): Promise<IDirectoryListing> {
+  const dir: IDirectoryListing = {
+    files: [],
+    folders: [],
+  };
 
-    const path = resolve(top);
-
-    let stats;
+  for (const path of paths) {
     try {
-      stats = await stat(path);
+      const resolved = join(root, path);
+      const stats = await stat(resolved);
+      if (stats.isDirectory()) {
+        dir.folders.push(resolved);
+      } else {
+        dir.files.push(resolved);
+      }
     } catch (error) {
+      // TODO: add argument to ignore eperm
       if (error.code === "EPERM") {
-        const result = await cb(error, path);
-        if (result === EndWalk) return;
+        console.error(error.message);
       } else {
         throw error;
       }
     }
+  }
 
-    if (stats) {
-      if (stats.isDirectory() && recursive) {
-        const newFiles = await readdir(path);
-        fileStack.push(...newFiles.map((f) => join(path, f)));
-      } else {
-        if (isFittingExtension(extensions, path)) {
-          const result = await cb(null, path);
-          if (result === EndWalk) return;
-        }
+  return dir;
+}
+
+export async function walk(opts: IWalkOptions): Promise<void> {
+  const { root, cb, recursive, extensions } = opts;
+  const folderStack = new Stack<string>();
+  folderStack.push(root);
+
+  while (folderStack.peek()) {
+    const top = folderStack.pop();
+    if (!top) return;
+
+    const path = resolve(top);
+
+    const dirContent = await readdir(path);
+    const { files, folders } = await readdirSplit(path, dirContent);
+
+    for (const file of files) {
+      if (isFittingExtension(extensions, file)) {
+        const result = await cb(null, file);
+        if (result === true) return;
       }
+    }
+
+    if (recursive) {
+      folderStack.push(...folders);
     }
   }
 }
