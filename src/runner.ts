@@ -22,7 +22,7 @@ export interface ISarosOptions {
   exclude: string[];
 }
 
-export async function listFiles(opts: ISarosOptions) {
+export async function listFiles(opts: ISarosOptions): Promise<void> {
   const { path, recursive, extensions, exclude } = opts;
 
   await walk({
