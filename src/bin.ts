@@ -1,21 +1,26 @@
 import args from "./args";
 import { normalizeExtension } from "./utility";
-import { run } from "./run";
+import { getStats, listFiles, ISarosOptions } from "./runner";
 
 const argv = args.argv;
 
 async function main() {
-  const extensions = (argv.ext || []).map(normalizeExtension);
-  const result = await run(
-    <string>argv.path,
-    argv.recursive || false,
-    extensions,
-  );
+  const opts: ISarosOptions = {
+    path: <string>argv.path,
+    recursive: argv.recursive,
+    extensions: argv.ext.map(normalizeExtension),
+    exclude: argv.ignore,
+  };
 
-  if (argv.details) {
-    console.log(result);
+  if (!argv.list) {
+    const result = await getStats(opts);
+    if (argv.details) {
+      console.log(result);
+    } else {
+      console.log(result.numLines);
+    }
   } else {
-    console.log(result.numLines);
+    await listFiles(opts);
   }
 
   process.exit();

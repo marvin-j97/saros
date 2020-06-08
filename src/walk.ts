@@ -1,7 +1,7 @@
 import { promises } from "fs";
-import { resolve, join } from "path";
+import { resolve, join, basename } from "path";
 import { Stack } from "./stack";
-import { isFittingExtension } from "./utility";
+import { isFittingExtension, isFileIgnored } from "./utility";
 
 const { stat, readdir } = promises;
 
@@ -12,6 +12,7 @@ export interface IWalkOptions {
   cb: FileCallback;
   recursive: boolean;
   extensions: string[];
+  exclude: string[];
 }
 
 interface IDirectoryListing {
@@ -38,7 +39,6 @@ async function readdirSplit(
         dir.files.push(resolved);
       }
     } catch (error) {
-      // TODO: add argument to ignore eperm
       if (error.code === "EPERM") {
         console.error(error.message);
       } else {
@@ -51,7 +51,7 @@ async function readdirSplit(
 }
 
 export async function walk(opts: IWalkOptions): Promise<void> {
-  const { root, cb, recursive, extensions } = opts;
+  const { root, cb, recursive, extensions, exclude } = opts;
   const folderStack = new Stack<string>();
   folderStack.push(root);
 
@@ -65,14 +65,23 @@ export async function walk(opts: IWalkOptions): Promise<void> {
     const { files, folders } = await readdirSplit(path, dirContent);
 
     for (const file of files) {
-      if (isFittingExtension(extensions, file)) {
+      const checkedExtension = isFittingExtension(extensions, file);
+      const checkedIgnoreList = !isFileIgnored(exclude, basename(file));
+
+      if (checkedExtension && checkedIgnoreList) {
         const result = await cb(null, file);
         if (result === true) return;
       }
     }
 
     if (recursive) {
-      folderStack.push(...folders);
+      // Push on stack backwards, so the folders are sorted A-Z
+      for (let i = folders.length - 1; i >= 0; i--) {
+        const folder = folders[i];
+        if (!isFileIgnored(exclude, basename(folder))) {
+          folderStack.push(folder);
+        }
+      }
     }
   }
 }

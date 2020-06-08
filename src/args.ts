@@ -2,16 +2,39 @@ import yargs from "yargs";
 
 export default yargs
   .scriptName("saros")
-  .command("$0 <path>", "Count lines in path")
   .version("0.0.1")
-  .array("ext")
-  .boolean("recursive")
-  .boolean("bail")
-  .boolean("list")
-  .boolean("details")
-  .alias("R", "recursive")
-  .alias("v", "version")
-  .alias("list", "l")
+  .command("$0 <path>", "Count lines in path")
+  .options({
+    ignore: {
+      alias: "I",
+      default: [],
+      type: "array",
+      description:
+        "Array of substrings - will ignore file/folder if its name is equal to any of the strings",
+    },
+    ext: {
+      default: [],
+      type: "array",
+      description: "File extensions filter, will count all files if empty",
+    },
+    recursive: {
+      alias: "R",
+      default: false,
+      type: "boolean",
+      description: "Whether to visit subfolders",
+    },
+    list: {
+      alias: "l",
+      default: false,
+      type: "boolean",
+      description: "List all file names",
+    },
+    details: {
+      default: false,
+      type: "boolean",
+      description: "Show more detailed statistics",
+    },
+  })
   .check((argv) => {
     if (argv.list && argv.details) {
       throw new Error("Error: Use list or details");

@@ -8,17 +8,42 @@ export interface ICountResult {
   numLines: number;
   numUsedLines: number;
   numBlankLines: number;
+  percentUsed: number;
+  percentBlank: number;
   numFilesPerExtension: Record<string, number>;
   numLinesPerExtension: Record<string, number>;
   timeMs: number;
 }
 
-export async function run(
-  // TODO: object
-  path: string,
-  recursive: boolean,
-  extensions: string[],
-): Promise<ICountResult> {
+export interface ISarosOptions {
+  path: string;
+  recursive: boolean;
+  extensions: string[];
+  exclude: string[];
+}
+
+export async function listFiles(opts: ISarosOptions) {
+  const { path, recursive, extensions, exclude } = opts;
+
+  await walk({
+    root: path,
+    extensions,
+    recursive,
+    exclude,
+    cb: async (err, file) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(file);
+      }
+      return false;
+    },
+  });
+}
+
+export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
+  const { path, recursive, extensions, exclude } = opts;
+
   let numFiles = 0;
   let numUsedLines = 0;
   let numBlankLines = 0;
@@ -29,6 +54,9 @@ export async function run(
 
   await walk({
     root: path,
+    recursive,
+    extensions,
+    exclude,
     cb: async (err, path) => {
       if (err) {
         console.error(err);
@@ -49,16 +77,18 @@ export async function run(
       }
       return false;
     },
-    recursive,
-    extensions,
   });
+
+  const numLines = numUsedLines + numBlankLines;
 
   return {
     timeMs: timer.asMilli(),
     numFiles,
-    numLines: numUsedLines + numBlankLines,
+    numLines,
     numUsedLines,
     numBlankLines,
+    percentUsed: numUsedLines / numLines,
+    percentBlank: numBlankLines / numLines,
     numFilesPerExtension,
     numLinesPerExtension,
   };

@@ -11,3 +11,8 @@ export function isFittingExtension(
   if (!extensions.length) return true;
   return extensions.some((ext) => path.endsWith(ext));
 }
+
+export function isFileIgnored(exclude: string[], file: string) {
+  if (!exclude.length) return false;
+  return exclude.some((ex) => ex == file);
+}
