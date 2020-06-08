@@ -9,8 +9,7 @@ export default yargs
       alias: "I",
       default: [],
       type: "array",
-      description:
-        "Array of substrings - will ignore file/folder if its name is equal to any of the strings",
+      description: "Ignore file/folder with name equal to any of the strings",
     },
     ext: {
       default: [],

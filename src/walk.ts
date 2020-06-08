@@ -1,5 +1,5 @@
 import { promises } from "fs";
-import { resolve, join, basename } from "path";
+import { resolve, join } from "path";
 import { Stack } from "./stack";
 import { isFittingExtension, isFileIgnored } from "./utility";
 
@@ -12,7 +12,7 @@ export interface IWalkOptions {
   cb: FileCallback;
   recursive: boolean;
   extensions: string[];
-  exclude: string[];
+  ignore: string[];
 }
 
 interface IDirectoryListing {
@@ -51,7 +51,7 @@ async function readdirSplit(
 }
 
 export async function walk(opts: IWalkOptions): Promise<void> {
-  const { root, cb, recursive, extensions, exclude } = opts;
+  const { root, cb, recursive, extensions, ignore } = opts;
   const folderStack = new Stack<string>();
   folderStack.push(root);
 
@@ -66,7 +66,7 @@ export async function walk(opts: IWalkOptions): Promise<void> {
 
     for (const file of files) {
       const checkedExtension = isFittingExtension(extensions, file);
-      const checkedIgnoreList = !isFileIgnored(exclude, basename(file));
+      const checkedIgnoreList = !isFileIgnored(ignore, file);
 
       if (checkedExtension && checkedIgnoreList) {
         const result = await cb(null, file);
@@ -78,7 +78,7 @@ export async function walk(opts: IWalkOptions): Promise<void> {
       // Push on stack backwards, so the folders are sorted A-Z
       for (let i = folders.length - 1; i >= 0; i--) {
         const folder = folders[i];
-        if (!isFileIgnored(exclude, basename(folder))) {
+        if (!isFileIgnored(ignore, folder)) {
           folderStack.push(folder);
         }
       }

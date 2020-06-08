@@ -9,7 +9,7 @@ async function main() {
     path: <string>argv.path,
     recursive: argv.recursive,
     extensions: argv.ext.map(normalizeExtension),
-    exclude: argv.ignore,
+    ignore: argv.ignore,
   };
 
   if (!argv.list) {

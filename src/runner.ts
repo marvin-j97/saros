@@ -19,17 +19,17 @@ export interface ISarosOptions {
   path: string;
   recursive: boolean;
   extensions: string[];
-  exclude: string[];
+  ignore: string[];
 }
 
 export async function listFiles(opts: ISarosOptions): Promise<void> {
-  const { path, recursive, extensions, exclude } = opts;
+  const { path, recursive, extensions, ignore } = opts;
 
   await walk({
     root: path,
     extensions,
     recursive,
-    exclude,
+    ignore,
     cb: async (err, file) => {
       if (err) {
         console.error(err);
@@ -42,7 +42,7 @@ export async function listFiles(opts: ISarosOptions): Promise<void> {
 }
 
 export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
-  const { path, recursive, extensions, exclude } = opts;
+  const { path, recursive, extensions, ignore } = opts;
 
   let numFiles = 0;
   let numUsedLines = 0;
@@ -56,7 +56,7 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
     root: path,
     recursive,
     extensions,
-    exclude,
+    ignore,
     cb: async (err, path) => {
       if (err) {
         console.error(err);
@@ -70,9 +70,9 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
           if (numFilesPerExtension[ext]) numFilesPerExtension[ext] += 1;
           else numFilesPerExtension[ext] = 1;
 
-          if (numLinesPerExtension[ext])
-            numLinesPerExtension[ext] += result.numUsed;
-          else numLinesPerExtension[ext] = result.numUsed;
+          const lineCount = result.numUsed + result.numBlanks;
+          if (numLinesPerExtension[ext]) numLinesPerExtension[ext] += lineCount;
+          else numLinesPerExtension[ext] = lineCount;
         }
       }
       return false;
