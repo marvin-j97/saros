@@ -13,7 +13,6 @@ export function fileIgnorer(ignore: string[]) {
     const filename = basename(path);
     if (!ignore.length) return false;
     const isMatch = micromatch.isMatch(filename, ignore);
-    console.log(ignore, filename, isMatch);
     return isMatch;
   };
 }
