@@ -64,7 +64,7 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
       if (err) {
         console.error(err);
       } else {
-        logger.log(`Got file ${path}`);
+        logger.log(`Runner: Got file ${path}`);
         const result = await countLines(path);
         numFiles++;
         numUsedLines += result.numUsed;

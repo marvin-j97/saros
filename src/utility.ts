@@ -1,4 +1,5 @@
-import { basename, extname } from "path";
+import { basename } from "path";
+import micromatch from "micromatch";
 
 export function normalizeExtension(ext: string | number): string {
   const str = ext.toString();
@@ -7,16 +8,20 @@ export function normalizeExtension(ext: string | number): string {
   return "." + str;
 }
 
+export function fileIgnorer(ignore: string[]) {
+  return (path: string): boolean => {
+    const filename = basename(path);
+    if (!ignore.length) return false;
+    const isMatch = micromatch.isMatch(filename, ignore);
+    console.log(ignore, filename, isMatch);
+    return isMatch;
+  };
+}
+
 export function isFittingExtension(
   extensions: string[],
   path: string,
 ): boolean {
   if (!extensions.length) return true;
   return extensions.some((ext) => path.endsWith(ext));
-}
-
-export function isFileIgnored(ignore: string[], file: string): boolean {
-  const filename = basename(file, extname(file));
-  if (!ignore.length) return false;
-  return ignore.some((ex) => ex == filename);
 }

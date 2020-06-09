@@ -81,9 +81,9 @@ test.serial("Count all", async (t) => {
   });
 });
 
-test.serial("Count all, but ignore 'test'", async (t) => {
+test.serial("Count all, but ignore 'test.json'", async (t) => {
   const result = await getStats({
-    ignore: ["test"],
+    ignore: ["test.json"],
     extensions: [],
     path: "./test/fixture",
     recursive: true,

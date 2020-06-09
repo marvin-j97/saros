@@ -1,7 +1,7 @@
 import { promises } from "fs";
 import { resolve, join } from "path";
 import { Stack } from "./stack";
-import { isFittingExtension, isFileIgnored } from "./utility";
+import { isFittingExtension, fileIgnorer } from "./utility";
 import * as logger from "./debug";
 
 const { stat, readdir } = promises;
@@ -69,16 +69,18 @@ export async function walk(opts: IWalkOptions): Promise<void> {
     const dirContent = await readdir(path);
     const { files, folders } = await readdirSplit(path, dirContent);
 
+    const isIgnoredFile = fileIgnorer(ignore);
+
     for (const file of files) {
-      logger.log(`Checking file ${file}`);
+      logger.log(`Walk: Checking file ${file}`);
       const checkedExtension = isFittingExtension(extensions, file);
-      const checkedIgnoreList = !isFileIgnored(ignore, file);
+      const checkedIgnoreList = !isIgnoredFile(file);
 
       if (checkedExtension && checkedIgnoreList) {
-        logger.log(`Calling callback with ${file}`);
+        logger.log(`Walk: Calling callback with ${file}`);
         const result = await cb(null, file);
         if (result === true) {
-          logger.log(`Callback = true, aborting walk`);
+          logger.log(`Walk: Callback = true, aborting walk`);
           return;
         }
       }
@@ -90,7 +92,7 @@ export async function walk(opts: IWalkOptions): Promise<void> {
       for (let i = folders.length - 1; i >= 0; i--) {
         const folder = folders[i];
         logger.log(`Checking folder ${folder}`);
-        if (!isFileIgnored(ignore, folder)) {
+        if (!isIgnoredFile(folder)) {
           logger.log(`Adding ${folder} to stack`);
           folderStack.push(folder);
         }
