@@ -2,6 +2,7 @@ import { walk } from "./walk";
 import { extname } from "path";
 import { countLines } from "./linecount";
 import { Timer } from "./timer";
+import * as logger from "./debug";
 
 export interface ICountResult {
   numFiles: number;
@@ -23,6 +24,7 @@ export interface ISarosOptions {
 }
 
 export async function listFiles(opts: ISarosOptions): Promise<void> {
+  logger.log("Entered listFiles");
   const { path, recursive, extensions, ignore } = opts;
 
   await walk({
@@ -42,6 +44,7 @@ export async function listFiles(opts: ISarosOptions): Promise<void> {
 }
 
 export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
+  logger.log("Entered getStats");
   const { path, recursive, extensions, ignore } = opts;
 
   let numFiles = 0;
@@ -61,6 +64,7 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
       if (err) {
         console.error(err);
       } else {
+        logger.log(`Got file ${path}`);
         const result = await countLines(path);
         numFiles++;
         numUsedLines += result.numUsed;
@@ -78,6 +82,8 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
       return false;
     },
   });
+
+  logger.log(`All files done, composing result`);
 
   const numLines = numUsedLines + numBlankLines;
 

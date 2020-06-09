@@ -1,5 +1,6 @@
 import readline from "readline";
 import { createReadStream } from "fs";
+import * as logger from "./debug";
 
 export interface IFileLines {
   numBlanks: number;
@@ -8,6 +9,8 @@ export interface IFileLines {
 
 export async function countLines(path: string): Promise<IFileLines> {
   return new Promise((resolve) => {
+    logger.log(`Counting lines of ${path}`);
+
     const result: IFileLines = {
       numBlanks: 0,
       numUsed: 0,
