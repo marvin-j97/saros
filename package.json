@@ -1,6 +1,6 @@
 {
   "name": "saros",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "CLI tool to count lines",
   "main": "dist/index",
   "bin": "dist/bin",
@@ -9,7 +9,10 @@
   ],
   "scripts": {
     "build:dist": "tsc",
-    "build:exe": "pkg dist/bin.js --output saros",
+    "build:exe": "pkg dist/bin.js --output release/saros",
+    "build:win-x64": "pkg dist/bin.js --target node12-win-x64 --output release/win-x64/saros",
+    "build:mac-x64": "pkg dist/bin.js --target node12-mac-x64 --output release/mac-x64/saros",
+    "build:linux-x64": "pkg dist/bin.js --target node12-linux-x64 --output release/linux-x64/saros",
     "build": "npm run build:dist && npm run build:exe",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",
@@ -24,7 +27,7 @@
     "line counter",
     "cli"
   ],
-  "author": "",
+  "author": "dotvirus",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dotvirus/saros/issues"
