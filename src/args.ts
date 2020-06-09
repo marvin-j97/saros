@@ -9,7 +9,7 @@ export default yargs
       alias: "I",
       default: [],
       type: "array",
-      description: "Ignore file/folder with name equal to any of the strings",
+      description: "Ignore files/folders, using glob syntax",
     },
     ext: {
       default: [],
@@ -20,18 +20,19 @@ export default yargs
       alias: "R",
       default: false,
       type: "boolean",
-      description: "Whether to visit subfolders",
+      description: "Visit subfolders",
+    },
+    details: {
+      alias: "D",
+      default: false,
+      type: "boolean",
+      description: "Show more detailed statistics",
     },
     list: {
       alias: "l",
       default: false,
       type: "boolean",
-      description: "List all file names",
-    },
-    details: {
-      default: false,
-      type: "boolean",
-      description: "Show more detailed statistics",
+      description: "List all file names instead",
     },
   })
   .check((argv) => {
