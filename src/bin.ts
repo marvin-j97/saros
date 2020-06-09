@@ -2,6 +2,7 @@ import args from "./args";
 import { normalizeExtension } from "./utility";
 import { getStats, listFiles, ISarosOptions } from "./runner";
 import * as logger from "./debug";
+import YAML from "yaml";
 
 const argv = args.argv;
 
@@ -18,7 +19,12 @@ async function main() {
   if (!argv.list) {
     const result = await getStats(opts);
     if (argv.details) {
-      console.log(result);
+      const format = argv.format.toUpperCase();
+      if (format === "JSON") {
+        console.log(JSON.stringify(result, null, 2));
+      } else if (format === "YAML" || format === "YML") {
+        console.log(YAML.stringify(result));
+      }
     } else {
       console.log(result.numLines);
     }

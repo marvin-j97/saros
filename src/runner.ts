@@ -9,8 +9,8 @@ export interface ICountResult {
   numLines: number;
   numUsedLines: number;
   numBlankLines: number;
-  percentUsed: number;
-  percentBlank: number;
+  percentUsed: number | null;
+  percentBlank: number | null;
   numFilesPerExtension: Record<string, number>;
   numLinesPerExtension: Record<string, number>;
   timeMs: number;
@@ -93,8 +93,8 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
     numLines,
     numUsedLines,
     numBlankLines,
-    percentUsed: numUsedLines / numLines,
-    percentBlank: numBlankLines / numLines,
+    percentUsed: numUsedLines / numLines || null,
+    percentBlank: numBlankLines / numLines || null,
     numFilesPerExtension,
     numLinesPerExtension,
   };

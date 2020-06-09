@@ -5,6 +5,12 @@ export default yargs
   .version("0.0.1")
   .command("$0 <path>", "Count lines in path")
   .options({
+    format: {
+      alias: "f",
+      default: "json",
+      type: "string",
+      description: "Output format (when using --details). JSON or YAML",
+    },
     ignore: {
       alias: "I",
       default: [],
@@ -38,6 +44,13 @@ export default yargs
   .check((argv) => {
     if (argv.list && argv.details) {
       throw new Error("Error: Use list or details");
+    }
+    return true;
+  })
+  .check((argv) => {
+    const format = argv.format.toUpperCase();
+    if (format != "JSON" && format != "YAML" && format != "YML") {
+      throw new Error("Error: Invalid format " + format);
     }
     return true;
   });
