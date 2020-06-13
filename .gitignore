@@ -103,5 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
-saros
-saros.exe
+/release
+/saros
+/saros.exe
