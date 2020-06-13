@@ -16,6 +16,16 @@ export interface ICountResult {
   timeMs: number;
 }
 
+type CountOnlyResult = Omit<
+  ICountResult,
+  | "numLines"
+  | "numUsedLines"
+  | "numBlankLines"
+  | "percentUsed"
+  | "percentBlank"
+  | "numLinesPerExtension"
+>;
+
 export interface ISarosOptions {
   path: string;
   recursive: boolean;
@@ -43,7 +53,9 @@ export async function listFiles(opts: ISarosOptions): Promise<void> {
   });
 }
 
-export async function countFiles(opts: ISarosOptions) {
+export async function countFiles(
+  opts: ISarosOptions,
+): Promise<CountOnlyResult> {
   logger.log("Entered getStats");
   const { path, recursive, extensions, ignore } = opts;
 
