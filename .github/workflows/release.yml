@@ -1,8 +1,7 @@
 on:
-  push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+  release:
+    types:
+      - created
 
 name: Upload Release Asset
 
@@ -34,7 +33,7 @@ jobs:
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: release/saros*
+          file: release/*
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true

@@ -14,12 +14,13 @@ const version = (() => {
 const NODE_VERSION = "node12";
 
 async function build(os: string) {
+  const ext = os.includes("win-") ? ".exe" : "";
   await pkg([
     "dist/bin.js",
     "--target",
     `${NODE_VERSION}-${os}`,
     "--output",
-    `release/${os}/saros-${version}`,
+    `release/saros-${os}-${version}${ext}`,
   ]);
 }
 
