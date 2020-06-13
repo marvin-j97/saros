@@ -1,16 +1,25 @@
 {
   "name": "saros",
-  "version": "1.0.0",
-  "description": "CLI tool to count lines and other file statistics",
-  "main": "dist/index",
-  "bin": "dist/bin",
+  "version": "0.1.1",
+  "description": "CLI tool to count lines",
+  "main": "dist/index.js",
+  "bin": {
+    "saros": "cli.js"
+  },
+  "files": [
+    "src",
+    "test",
+    "dist",
+    "cli.js"
+  ],
   "scripts": {
+    "npm:publish": "npm publish --access public",
     "build:dist": "tsc",
-    "build:exe": "pkg dist/bin.js --output saros",
-    "build": "npm run build:dist && npm run build:exe",
+    "build:exe": "pkg dist/bin.js --output release/saros",
+    "build:all": "npm run build:dist && gulp",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",
-    "test": "ava-ts test/**/*.spec.ts",
+    "test": "set DEBUG=saros:* && ava-ts test/**/*.spec.ts",
     "coverage": "nyc npm test"
   },
   "repository": {
@@ -21,13 +30,16 @@
     "line counter",
     "cli"
   ],
-  "author": "",
+  "author": "dotvirus",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dotvirus/saros/issues"
   },
   "homepage": "https://github.com/dotvirus/saros#readme",
   "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/gulp": "^4.0.6",
+    "@types/micromatch": "^4.0.1",
     "@types/node": "^14.0.11",
     "@types/yargs": "^15.0.5",
     "@typescript-eslint/eslint-plugin": "^3.1.0",
@@ -35,6 +47,7 @@
     "ava-ts": "^0.25.2",
     "eslint": "^7.2.0",
     "eslint-config-prettier": "^6.11.0",
+    "gulp": "^4.0.2",
     "nyc": "^15.1.0",
     "pkg": "^4.4.8",
     "ts-node": "^8.10.2",
@@ -42,6 +55,8 @@
   },
   "dependencies": {
     "debug": "^4.1.1",
+    "micromatch": "^4.0.2",
+    "yaml": "^1.10.0",
     "yargs": "^15.3.1"
   }
 }

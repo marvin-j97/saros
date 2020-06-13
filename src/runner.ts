@@ -2,18 +2,29 @@ import { walk } from "./walk";
 import { extname } from "path";
 import { countLines } from "./linecount";
 import { Timer } from "./timer";
+import * as logger from "./debug";
 
 export interface ICountResult {
   numFiles: number;
   numLines: number;
   numUsedLines: number;
   numBlankLines: number;
-  percentUsed: number;
-  percentBlank: number;
+  percentUsed: number | null;
+  percentBlank: number | null;
   numFilesPerExtension: Record<string, number>;
   numLinesPerExtension: Record<string, number>;
   timeMs: number;
 }
+
+type CountOnlyResult = Omit<
+  ICountResult,
+  | "numLines"
+  | "numUsedLines"
+  | "numBlankLines"
+  | "percentUsed"
+  | "percentBlank"
+  | "numLinesPerExtension"
+>;
 
 export interface ISarosOptions {
   path: string;
@@ -23,6 +34,7 @@ export interface ISarosOptions {
 }
 
 export async function listFiles(opts: ISarosOptions): Promise<void> {
+  logger.log("Entered listFiles");
   const { path, recursive, extensions, ignore } = opts;
 
   await walk({
@@ -41,7 +53,49 @@ export async function listFiles(opts: ISarosOptions): Promise<void> {
   });
 }
 
+export async function countFiles(
+  opts: ISarosOptions,
+): Promise<CountOnlyResult> {
+  logger.log("Entered getStats");
+  const { path, recursive, extensions, ignore } = opts;
+
+  let numFiles = 0;
+  const numFilesPerExtension: Record<string, number> = {};
+
+  const timer = new Timer();
+
+  await walk({
+    root: path,
+    recursive,
+    extensions,
+    ignore,
+    cb: async (err, path) => {
+      if (err) {
+        console.error(err);
+      } else {
+        logger.log(`Runner: Got file ${path}`);
+        numFiles++;
+        const ext = extname(path);
+        if (ext.length) {
+          if (numFilesPerExtension[ext]) numFilesPerExtension[ext] += 1;
+          else numFilesPerExtension[ext] = 1;
+        }
+      }
+      return false;
+    },
+  });
+
+  logger.log(`All files done, composing result`);
+
+  return {
+    timeMs: timer.asMilli(),
+    numFiles,
+    numFilesPerExtension,
+  };
+}
+
 export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
+  logger.log("Entered getStats");
   const { path, recursive, extensions, ignore } = opts;
 
   let numFiles = 0;
@@ -61,6 +115,7 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
       if (err) {
         console.error(err);
       } else {
+        logger.log(`Runner: Got file ${path}`);
         const result = await countLines(path);
         numFiles++;
         numUsedLines += result.numUsed;
@@ -79,6 +134,8 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
     },
   });
 
+  logger.log(`All files done, composing result`);
+
   const numLines = numUsedLines + numBlankLines;
 
   return {
@@ -87,8 +144,8 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
     numLines,
     numUsedLines,
     numBlankLines,
-    percentUsed: numUsedLines / numLines,
-    percentBlank: numBlankLines / numLines,
+    percentUsed: numUsedLines / numLines || null,
+    percentBlank: numBlankLines / numLines || null,
     numFilesPerExtension,
     numLinesPerExtension,
   };

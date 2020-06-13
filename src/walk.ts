@@ -1,7 +1,8 @@
 import { promises } from "fs";
 import { resolve, join } from "path";
 import { Stack } from "./stack";
-import { isFittingExtension, isFileIgnored } from "./utility";
+import { isFittingExtension, fileIgnorer } from "./utility";
+import * as logger from "./debug";
 
 const { stat, readdir } = promises;
 
@@ -55,33 +56,49 @@ export async function walk(opts: IWalkOptions): Promise<void> {
   const folderStack = new Stack<string>();
   folderStack.push(root);
 
+  logger.log(`Walking ${root}`);
+
   while (folderStack.peek()) {
     const top = folderStack.pop();
     if (!top) return;
 
     const path = resolve(top);
 
+    logger.log(`Reading ${path}`);
+
     const dirContent = await readdir(path);
     const { files, folders } = await readdirSplit(path, dirContent);
 
+    const isIgnoredFile = fileIgnorer(ignore);
+
     for (const file of files) {
+      logger.log(`Walk: Checking file ${file}`);
       const checkedExtension = isFittingExtension(extensions, file);
-      const checkedIgnoreList = !isFileIgnored(ignore, file);
+      const checkedIgnoreList = !isIgnoredFile(file);
 
       if (checkedExtension && checkedIgnoreList) {
+        logger.log(`Walk: Calling callback with ${file}`);
         const result = await cb(null, file);
-        if (result === true) return;
+        if (result === true) {
+          logger.log(`Walk: Callback = true, aborting walk`);
+          return;
+        }
       }
     }
 
     if (recursive) {
+      logger.log(`Recursion ON, adding folders to stack`);
       // Push on stack backwards, so the folders are sorted A-Z
       for (let i = folders.length - 1; i >= 0; i--) {
         const folder = folders[i];
-        if (!isFileIgnored(ignore, folder)) {
+        logger.log(`Checking folder ${folder}`);
+        if (!isIgnoredFile(folder)) {
+          logger.log(`Adding ${folder} to stack`);
           folderStack.push(folder);
         }
       }
+    } else {
+      logger.log("No recursion");
     }
   }
 }
