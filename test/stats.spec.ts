@@ -48,7 +48,7 @@ test.serial("Count.json", async (t) => {
     numLinesPerExtension: {
       ".json": 3,
     },
-    percentBlank: 0,
+    percentBlank: null,
     percentUsed: 1,
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "saros",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "CLI tool to count lines",
   "main": "dist/index.js",
   "bin": {
@@ -13,6 +13,7 @@
     "cli.js"
   ],
   "scripts": {
+    "watch": "tsc -w",
     "npm:publish": "npm publish --access public",
     "build:dist": "tsc",
     "build:exe": "pkg dist/bin.js --output release/saros",

@@ -1,10 +1,17 @@
 # saros
+
 CLI tool to count lines and other file statistics.
 
 ## Install
 
 ```
 npm i -g saros
+```
+
+## Run
+
+```
+saros --help
 ```
 
 ## Prebuilt binaries
