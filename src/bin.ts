@@ -29,7 +29,11 @@ async function main() {
 
   if (argv["files-only"]) {
     const result = await countFiles(opts);
-    printFormatted(result, argv.format);
+    if (argv.details) {
+      printFormatted(result, argv.format);
+    } else {
+      console.log(result.numFiles);
+    }
   } else if (!argv.list) {
     const result = await getStats(opts);
     if (argv.details) {
