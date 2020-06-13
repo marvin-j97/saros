@@ -20,7 +20,7 @@ async function build(os: string) {
     "--target",
     `${NODE_VERSION}-${os}`,
     "--output",
-    `release/${os}/saros-${version}${ext}`,
+    `release/saros-${os}-${version}${ext}`,
   ]);
 }
 
