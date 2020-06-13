@@ -34,6 +34,12 @@ export default yargs
       type: "boolean",
       description: "Show more detailed statistics",
     },
+    "files-only": {
+      alias: "count-files",
+      default: false,
+      type: "boolean",
+      description: "Count only files",
+    },
     list: {
       alias: "l",
       default: false,
@@ -42,8 +48,10 @@ export default yargs
     },
   })
   .check((argv) => {
-    if (argv.list && argv.details) {
-      throw new Error("Error: Use list or details");
+    if ([argv.list, argv.files, argv.details].filter(Boolean).length > 1) {
+      throw new Error(
+        "Error: Cannot use --list, --files and/or --details simultaneously",
+      );
     }
     return true;
   })

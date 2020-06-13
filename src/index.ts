@@ -1,1 +1,7 @@
-export { getStats, listFiles, ICountResult, ISarosOptions } from "./runner";
+export {
+  getStats,
+  listFiles,
+  ICountResult,
+  ISarosOptions,
+  countFiles,
+} from "./runner";

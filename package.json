@@ -1,13 +1,19 @@
 {
   "name": "saros",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "CLI tool to count lines",
-  "main": "dist/index",
-  "bin": "dist/bin",
+  "main": "dist/index.js",
+  "bin": {
+    "saros": "cli.js"
+  },
   "files": [
-    "dist"
+    "src",
+    "test",
+    "dist",
+    "cli.js"
   ],
   "scripts": {
+    "npm:publish": "npm publish --access public",
     "build:dist": "tsc",
     "build:exe": "pkg dist/bin.js --output release/saros",
     "build:all": "npm run build:dist && gulp",

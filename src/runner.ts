@@ -43,6 +43,45 @@ export async function listFiles(opts: ISarosOptions): Promise<void> {
   });
 }
 
+export async function countFiles(opts: ISarosOptions) {
+  logger.log("Entered getStats");
+  const { path, recursive, extensions, ignore } = opts;
+
+  let numFiles = 0;
+  const numFilesPerExtension: Record<string, number> = {};
+
+  const timer = new Timer();
+
+  await walk({
+    root: path,
+    recursive,
+    extensions,
+    ignore,
+    cb: async (err, path) => {
+      if (err) {
+        console.error(err);
+      } else {
+        logger.log(`Runner: Got file ${path}`);
+        numFiles++;
+        const ext = extname(path);
+        if (ext.length) {
+          if (numFilesPerExtension[ext]) numFilesPerExtension[ext] += 1;
+          else numFilesPerExtension[ext] = 1;
+        }
+      }
+      return false;
+    },
+  });
+
+  logger.log(`All files done, composing result`);
+
+  return {
+    timeMs: timer.asMilli(),
+    numFiles,
+    numFilesPerExtension,
+  };
+}
+
 export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
   logger.log("Entered getStats");
   const { path, recursive, extensions, ignore } = opts;
