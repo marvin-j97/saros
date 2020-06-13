@@ -2,6 +2,9 @@
 
 CLI tool to count lines and other file statistics.
 
+![Node.js CI](https://github.com/dotvirus/saros/workflows/Node.js%20CI/badge.svg?branch=dev)
+[![npm version](https://badge.fury.io/js/saros.svg)](https://badge.fury.io/js/saros)
+
 ## Install
 
 ```
