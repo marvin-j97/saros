@@ -2,7 +2,7 @@ import yargs from "yargs";
 
 export default yargs
   .scriptName("saros")
-  .version("0.0.1")
+  .version("0.1.3")
   .command("$0 <path>", "Count lines in path")
   .options({
     format: {
