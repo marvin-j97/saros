@@ -35,7 +35,7 @@ export default yargs
       description: "Show more detailed statistics",
     },
     "files-only": {
-      alias: "count-files",
+      alias: ["F", "count-files"],
       default: false,
       type: "boolean",
       description: "Count only files",
@@ -48,9 +48,7 @@ export default yargs
     },
   })
   .check((argv) => {
-    if (
-      [argv.list, argv["files-only"], argv.details].filter(Boolean).length > 1
-    ) {
+    if (argv.list && (argv["files-only"] || (argv.list && argv.details))) {
       throw new Error(
         "Error: Cannot use --list, --files and/or --details simultaneously",
       );
