@@ -48,7 +48,9 @@ export default yargs
     },
   })
   .check((argv) => {
-    if ([argv.list, argv.files, argv.details].filter(Boolean).length > 1) {
+    if (
+      [argv.list, argv["files-only"], argv.details].filter(Boolean).length > 1
+    ) {
       throw new Error(
         "Error: Cannot use --list, --files and/or --details simultaneously",
       );
