@@ -9,6 +9,7 @@ test.serial("Count .txt", async (t) => {
     recursive: false,
   });
 
+  // @ts-ignore
   delete result.timeMs;
 
   t.deepEqual(<Omit<typeof result, "timeMs">>result, {
@@ -35,6 +36,7 @@ test.serial("Count.json", async (t) => {
     recursive: true,
   });
 
+  // @ts-ignore
   delete result.timeMs;
 
   t.deepEqual(<Omit<typeof result, "timeMs">>result, {
@@ -61,6 +63,7 @@ test.serial("Count all", async (t) => {
     recursive: true,
   });
 
+  // @ts-ignore
   delete result.timeMs;
 
   t.deepEqual(<Omit<typeof result, "timeMs">>result, {
@@ -89,6 +92,7 @@ test.serial("Count all, but ignore 'test.json'", async (t) => {
     recursive: true,
   });
 
+  // @ts-ignore
   delete result.timeMs;
 
   t.deepEqual(<Omit<typeof result, "timeMs">>result, {
