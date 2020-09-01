@@ -27,22 +27,24 @@ async function main() {
     ignore: argv.ignore,
   };
 
-  if (argv["files-only"]) {
-    const result = await countFiles(opts);
-    if (argv.details) {
-      printFormatted(result, argv.format);
-    } else {
-      console.log(result.numFiles);
-    }
-  } else if (!argv.list) {
-    const result = await getStats(opts);
-    if (argv.details) {
-      printFormatted(result, argv.format);
-    } else {
-      console.log(result.numLines);
-    }
-  } else {
+  if (argv.list) {
     await listFiles(opts);
+  } else {
+    if (argv["files-only"]) {
+      const result = await countFiles(opts);
+      if (argv.details) {
+        printFormatted(result, argv.format);
+      } else {
+        console.log(result.numFiles);
+      }
+    } else {
+      const result = await getStats(opts);
+      if (argv.details) {
+        printFormatted(result, argv.format);
+      } else {
+        console.log(result.numLines);
+      }
+    }
   }
 
   logger.log("Main done");
