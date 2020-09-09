@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import args from "./args";
-import { normalizeExtension } from "./utility";
 import { getStats, listFiles, ISarosOptions, countFiles } from "./runner";
 import * as logger from "./debug";
 import YAML from "yaml";
@@ -23,7 +22,7 @@ async function main() {
   const opts: ISarosOptions = {
     path: <string>argv.path,
     recursive: argv.recursive,
-    extensions: argv.ext.map(normalizeExtension),
+    extensions: argv.ext,
     ignore: argv.ignore,
   };
 
