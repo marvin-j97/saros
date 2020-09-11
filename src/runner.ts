@@ -139,14 +139,16 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
 
   const numLines = numUsedLines + numBlankLines;
 
+  const percentUsed = numLines ? numUsedLines / numLines : null;
+
   return {
     timeMs: timer.asMilli(),
     numFiles,
     numLines,
     numUsedLines,
     numBlankLines,
-    percentUsed: numUsedLines / numLines || null,
-    percentBlank: numBlankLines / numLines || null,
+    percentUsed: percentUsed,
+    percentBlank: percentUsed ? 1 - percentUsed : null,
     numFilesPerExtension,
     numLinesPerExtension,
   };
