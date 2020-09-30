@@ -21,7 +21,7 @@
     "build:all": "npm run build:dist && gulp",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",
-    "test": "set DEBUG=saros:* && ava-ts test/**/*.spec.ts"
+    "test": "set DEBUG=saros:* && ava-ts \"test/**/*.spec.ts\""
   },
   "repository": {
     "type": "git",
