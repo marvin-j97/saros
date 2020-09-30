@@ -1,5 +1,6 @@
-import test from "ava-ts";
+import test from "ava";
 import { getStats } from "../src";
+import floatEqual from "float-equal";
 
 test.serial("Count .txt", async (t) => {
   const result = await getStats({
@@ -9,6 +10,7 @@ test.serial("Count .txt", async (t) => {
     recursive: false,
   });
 
+  // @ts-ignore
   delete result.timeMs;
 
   t.deepEqual(<Omit<typeof result, "timeMs">>result, {
@@ -35,6 +37,7 @@ test.serial("Count.json", async (t) => {
     recursive: true,
   });
 
+  // @ts-ignore
   delete result.timeMs;
 
   t.deepEqual(<Omit<typeof result, "timeMs">>result, {
@@ -48,7 +51,7 @@ test.serial("Count.json", async (t) => {
     numLinesPerExtension: {
       ".json": 3,
     },
-    percentBlank: null,
+    percentBlank: 0,
     percentUsed: 1,
   });
 });
@@ -61,24 +64,23 @@ test.serial("Count all", async (t) => {
     recursive: true,
   });
 
+  // @ts-ignore
   delete result.timeMs;
 
-  t.deepEqual(<Omit<typeof result, "timeMs">>result, {
-    numFiles: 3,
-    numLines: 13,
-    numBlankLines: 5,
-    numUsedLines: 8,
-    numFilesPerExtension: {
-      ".json": 1,
-      ".txt": 2,
-    },
-    numLinesPerExtension: {
-      ".json": 3,
-      ".txt": 10,
-    },
-    percentBlank: 5 / 13,
-    percentUsed: 8 / 13,
+  t.is(result.numFiles, 3);
+  t.is(result.numLines, 13);
+  t.is(result.numBlankLines, 5);
+  t.is(result.numUsedLines, 8);
+  t.deepEqual(result.numFilesPerExtension, {
+    ".json": 1,
+    ".txt": 2,
   });
+  t.deepEqual(result.numLinesPerExtension, {
+    ".json": 3,
+    ".txt": 10,
+  });
+  t.is(floatEqual(<number>result.percentBlank, 5 / 13), true);
+  t.is(floatEqual(<number>result.percentUsed, 8 / 13), true);
 });
 
 test.serial("Count all, but ignore 'test.json'", async (t) => {
@@ -89,6 +91,7 @@ test.serial("Count all, but ignore 'test.json'", async (t) => {
     recursive: true,
   });
 
+  // @ts-ignore
   delete result.timeMs;
 
   t.deepEqual(<Omit<typeof result, "timeMs">>result, {

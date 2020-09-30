@@ -2,7 +2,7 @@ import yargs from "yargs";
 
 export default yargs
   .scriptName("saros")
-  .version("0.0.1")
+  .version("0.2.2")
   .command("$0 <path>", "Count lines in path")
   .options({
     format: {
@@ -35,7 +35,7 @@ export default yargs
       description: "Show more detailed statistics",
     },
     "files-only": {
-      alias: "count-files",
+      alias: ["F", "count-files"],
       default: false,
       type: "boolean",
       description: "Count only files",
@@ -48,7 +48,7 @@ export default yargs
     },
   })
   .check((argv) => {
-    if ([argv.list, argv.files, argv.details].filter(Boolean).length > 1) {
+    if (argv.list && (argv["files-only"] || (argv.list && argv.details))) {
       throw new Error(
         "Error: Cannot use --list, --files and/or --details simultaneously",
       );

@@ -3,6 +3,7 @@ import { extname } from "path";
 import { countLines } from "./linecount";
 import { Timer } from "./timer";
 import * as logger from "./debug";
+import { normalizeExtension } from "./utility";
 
 export interface ICountResult {
   numFiles: number;
@@ -67,7 +68,7 @@ export async function countFiles(
   await walk({
     root: path,
     recursive,
-    extensions,
+    extensions: extensions.map(normalizeExtension),
     ignore,
     cb: async (err, path) => {
       if (err) {
@@ -109,7 +110,7 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
   await walk({
     root: path,
     recursive,
-    extensions,
+    extensions: extensions.map(normalizeExtension),
     ignore,
     cb: async (err, path) => {
       if (err) {
@@ -138,14 +139,16 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
 
   const numLines = numUsedLines + numBlankLines;
 
+  const percentUsed = numLines ? numUsedLines / numLines : null;
+
   return {
     timeMs: timer.asMilli(),
     numFiles,
     numLines,
     numUsedLines,
     numBlankLines,
-    percentUsed: numUsedLines / numLines || null,
-    percentBlank: numBlankLines / numLines || null,
+    percentUsed: percentUsed,
+    percentBlank: percentUsed ? 1 - percentUsed : null,
     numFilesPerExtension,
     numLinesPerExtension,
   };
