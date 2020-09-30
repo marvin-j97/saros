@@ -1,4 +1,4 @@
-import test from "ava-ts";
+import test from "ava";
 import { normalizeExtension } from "../../src/utility";
 
 const tests = [

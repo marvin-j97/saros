@@ -1,4 +1,4 @@
-import test from "ava-ts";
+import test from "ava";
 import { fileIgnorer } from "../../src/utility";
 
 const tests = [
@@ -13,8 +13,9 @@ const tests = [
   [["test"], "test", true],
 ] as [string[], string, boolean][];
 
-for (const testCase of tests) {
-  test.serial(`Ignore ${testCase[1]}`, async (t) => {
+for (let i = 0; i < tests.length; i++) {
+  const testCase = tests[i];
+  test.serial(`Ignore ${i}`, async (t) => {
     const isIgnoredFile = fileIgnorer(testCase[0]);
     const result = isIgnoredFile(testCase[1]);
     t.is(result, testCase[2]);

@@ -1,4 +1,4 @@
-import test from "ava-ts";
+import test from "ava";
 import { isFittingExtension } from "../../src/utility";
 
 const tests = [
@@ -11,8 +11,9 @@ const tests = [
   [[".json", ".txt"], ".avi", false],
 ] as [string[], string, boolean][];
 
-for (const testCase of tests) {
-  test.serial(`Fitting extension ${testCase[1]}`, async (t) => {
+for (let i = 0; i < tests.length; i++) {
+  const testCase = tests[i];
+  test.serial(`Fitting extension ${i}`, async (t) => {
     const result = isFittingExtension(testCase[0], testCase[1]);
     t.is(result, testCase[2]);
   });

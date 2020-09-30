@@ -1,4 +1,4 @@
-import test from "ava-ts";
+import test from "ava";
 import { getStats } from "../src";
 import floatEqual from "float-equal";
 
