@@ -3,15 +3,17 @@
   "version": "0.2.3",
   "description": "CLI tool to count lines",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "bin": {
     "saros": "cli.js"
   },
   "files": [
-    "src",
     "dist",
     "cli.js"
   ],
   "scripts": {
+    "coverage": "nyc npm test",
+    "postcoverage": "nyc report --reporter=json",
     "watch": "tsc -w",
     "npm:publish": "npm publish --access public",
     "build:dist": "tsc",
@@ -19,8 +21,7 @@
     "build:all": "npm run build:dist && gulp",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",
-    "test": "set DEBUG=saros:* && ava-ts test/**/*.spec.ts",
-    "coverage": "nyc npm test"
+    "test": "set DEBUG=saros:* && ava-ts test/**/*.spec.ts"
   },
   "repository": {
     "type": "git",
