@@ -17,7 +17,7 @@ npm i -g saros
 saros --help
 ```
 
-### CLI example to get all files within the current directoy except files within `node_modules`
+### CLI example to get file statistics within the current directory (and subfolders), but ignoring `node_modules`
 
 ```
 saros . -R -D -I node_modules
@@ -27,7 +27,7 @@ saros . -R -D -I node_modules
 
 ### countFiles()
 
-Count all files and return a sum per extension
+Count all *.js files recursively, ignoring `node_modules` and return a sum per extension
 
 ```javascript
 const saros = require("saros");
@@ -58,7 +58,7 @@ saros
 
 ### getStats()
 
-Count all files but also include more detailed stats
+Count all *.js files recursively, ignoring `node_modules` but also include more detailed stats
 
 ```javascript
 const saros = require("saros");
