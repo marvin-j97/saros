@@ -12,10 +12,88 @@ CLI tool to count lines and other file statistics.
 npm i -g saros
 ```
 
-## Run
+## Run CLI
 
 ```
 saros --help
+```
+
+### CLI example to get file statistics within the current directory (and subfolders), but ignoring `node_modules`
+
+```
+saros . -R -D -I node_modules
+```
+
+## Progammatic usage count
+
+### countFiles()
+
+Count all *.js files recursively, ignoring `node_modules` and return a sum per extension
+
+```javascript
+const saros = require("saros");
+
+saros
+  .countFiles({
+    recursive: true,
+    path: ".",
+    ignore: ["node_modules"],
+    extensions: [".js"],
+  })
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+// Example output:
+// {
+//   timeMs: 5,
+//   numFiles: 1,
+//   numFilesPerExtension: {
+//     .js: 1
+//   }
+// }
+```
+
+### getStats()
+
+Count all *.js files recursively, ignoring `node_modules` but also include more detailed stats
+
+```javascript
+const saros = require("saros");
+
+saros
+  .getStats({
+    recursive: true,
+    path: ".",
+    ignore: ["node_modules"],
+    extensions: [".js"],
+  })
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+// Example output:
+// {
+//   timeMs: 7,
+//   numFiles: 1,
+//   numLines: 14,
+//   numUsedLines: 13,
+//   numBlankLines: 1,
+//   percentUsed: 0.9285714285714286,
+//   percentBlank: 0.07142857142857142,
+//   numFilesPerExtension: {
+//     .js: 1
+//   },
+//   numLinesPerExtension: {
+//     .js: 14
+//   }
+// }
 ```
 
 ## Prebuilt binaries
