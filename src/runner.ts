@@ -57,7 +57,7 @@ export async function listFiles(opts: ISarosOptions): Promise<void> {
 export async function countFiles(
   opts: ISarosOptions,
 ): Promise<CountOnlyResult> {
-  logger.log("Entered getStats");
+  logger.log("Entered countFiles");
   const { path, recursive, extensions, ignore } = opts;
 
   let numFiles = 0;
