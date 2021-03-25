@@ -25,18 +25,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dotvirus/saros.git"
+    "url": "git+https://github.com/marvin-j97/saros.git"
   },
   "keywords": [
     "line counter",
     "cli"
   ],
-  "author": "dotvirus",
+  "author": "marvin-j97",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dotvirus/saros/issues"
+    "url": "https://github.com/marvin-j97/marvin-j97/issues"
   },
-  "homepage": "https://github.com/dotvirus/saros#readme",
+  "homepage": "https://github.com/marvin-j97/saros#readme",
   "devDependencies": {
     "@types/debug": "^4.1.5",
     "@types/float-equal": "^2.0.0",
