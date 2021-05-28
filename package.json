@@ -39,7 +39,7 @@
   "homepage": "https://github.com/marvin-j97/saros#readme",
   "devDependencies": {
     "@types/debug": "^4.1.5",
-    "@types/float-equal": "^2.0.0",
+    "@types/float-equal": "^3.0.0",
     "@types/gulp": "^4.0.6",
     "@types/micromatch": "^4.0.1",
     "@types/node": "^15.0.0",
