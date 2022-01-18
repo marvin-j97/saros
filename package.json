@@ -62,7 +62,7 @@
     "micromatch": "^4.0.2",
     "walk-it": "^0.0.1",
     "yaml": "^2.0.0-10",
-    "yargs": "16"
+    "yargs": "17"
   },
   "ava": {
     "extensions": [
