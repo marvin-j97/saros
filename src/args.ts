@@ -4,9 +4,6 @@ export default yargs
   .scriptName("saros")
   .version("0.2.4")
   .command("$0 <path>", "Count lines in path")
-  .positional("path", {
-    type: "string",
-  })
   .options({
     format: {
       alias: "f",
