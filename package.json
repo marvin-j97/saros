@@ -1,6 +1,6 @@
 {
   "name": "saros",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "CLI tool to count lines",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -12,13 +12,13 @@
     "cli.js"
   ],
   "scripts": {
-    "coverage": "nyc npm test",
+    "coverage": "nyc yarn test",
     "postcoverage": "nyc report --reporter=json",
     "watch": "tsc -w",
-    "npm:publish": "npm publish --access public",
+    "publish": "yarn publish --access public",
     "build:dist": "tsc",
     "build:exe": "pkg dist/bin.js --output release/saros",
-    "build:all": "npm run build:dist && gulp",
+    "build:all": "yarn build:dist && gulp",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",
     "test": "set DEBUG=saros:* && ava \"test/**/*.spec.ts\""
@@ -43,7 +43,7 @@
     "@types/gulp": "^4.0.6",
     "@types/micromatch": "^4.0.1",
     "@types/node": "^16.3.2",
-    "@types/yargs": "^16.0.0",
+    "@types/yargs": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/parser": "^3.1.0",
     "ava": "^3.13.0",
@@ -60,6 +60,7 @@
   "dependencies": {
     "debug": "^4.1.1",
     "micromatch": "^4.0.2",
+    "walk-it": "^0.0.1",
     "yaml": "^1.10.0",
     "yargs": "^17.0.1"
   },

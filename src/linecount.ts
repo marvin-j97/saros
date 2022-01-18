@@ -21,8 +21,11 @@ export async function countLines(path: string): Promise<IFileLines> {
         input: createReadStream(path),
       })
       .on("line", (line) => {
-        if (line.length) result.numUsed++;
-        else result.numBlanks++;
+        if (line.length) {
+          result.numUsed++;
+        } else {
+          result.numBlanks++;
+        }
       })
       .on("close", () => {
         resolve(result);

@@ -1,9 +1,10 @@
-import { walk } from "./walk";
+import { walkFiles } from "walk-it";
 import { extname } from "path";
+
 import { countLines } from "./linecount";
 import { Timer } from "./timer";
 import * as logger from "./debug";
-import { normalizeExtension } from "./utility";
+import { fileIgnorer, isFittingExtension, normalizeExtension } from "./utility";
 
 export interface ICountResult {
   numFiles: number;
@@ -38,20 +39,22 @@ export async function listFiles(opts: ISarosOptions): Promise<void> {
   logger.log("Entered listFiles");
   const { path, recursive, extensions, ignore } = opts;
 
-  await walk({
-    root: path,
-    extensions,
+  const isIgnoredFile = fileIgnorer(ignore);
+
+  for await (const file of walkFiles(path, {
     recursive,
-    ignore,
-    cb: async (err, file) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log(file);
-      }
-      return false;
-    },
-  });
+    excludeFolder: fileIgnorer(ignore),
+  })) {
+    const checkedExtension = isFittingExtension(
+      extensions.map(normalizeExtension),
+      file,
+    );
+    const checkedIgnoreList = !isIgnoredFile(file);
+
+    if (checkedExtension && checkedIgnoreList) {
+      console.log(file);
+    }
+  }
 }
 
 export async function countFiles(
@@ -65,26 +68,28 @@ export async function countFiles(
 
   const timer = new Timer();
 
-  await walk({
-    root: path,
+  const isIgnoredFile = fileIgnorer(ignore);
+
+  for await (const file of walkFiles(path, {
     recursive,
-    extensions: extensions.map(normalizeExtension),
-    ignore,
-    cb: async (err, path) => {
-      if (err) {
-        console.error(err);
-      } else {
-        logger.log(`Runner: Got file ${path}`);
-        numFiles++;
-        const ext = extname(path);
-        if (ext.length) {
-          if (numFilesPerExtension[ext]) numFilesPerExtension[ext] += 1;
-          else numFilesPerExtension[ext] = 1;
-        }
+    excludeFolder: fileIgnorer(ignore),
+  })) {
+    const checkedExtension = isFittingExtension(
+      extensions.map(normalizeExtension),
+      file,
+    );
+    const checkedIgnoreList = !isIgnoredFile(file);
+
+    if (checkedExtension && checkedIgnoreList) {
+      logger.log(`Runner: Got file ${file}`);
+      numFiles++;
+      const ext = extname(file);
+      if (ext.length) {
+        if (numFilesPerExtension[ext]) numFilesPerExtension[ext] += 1;
+        else numFilesPerExtension[ext] = 1;
       }
-      return false;
-    },
-  });
+    }
+  }
 
   logger.log(`All files done, composing result`);
 
@@ -107,33 +112,35 @@ export async function getStats(opts: ISarosOptions): Promise<ICountResult> {
 
   const timer = new Timer();
 
-  await walk({
-    root: path,
-    recursive,
-    extensions: extensions.map(normalizeExtension),
-    ignore,
-    cb: async (err, path) => {
-      if (err) {
-        console.error(err);
-      } else {
-        logger.log(`Runner: Got file ${path}`);
-        const result = await countLines(path);
-        numFiles++;
-        numUsedLines += result.numUsed;
-        numBlankLines += result.numBlanks;
-        const ext = extname(path);
-        if (ext.length) {
-          if (numFilesPerExtension[ext]) numFilesPerExtension[ext] += 1;
-          else numFilesPerExtension[ext] = 1;
+  const isIgnoredFile = fileIgnorer(ignore);
 
-          const lineCount = result.numUsed + result.numBlanks;
-          if (numLinesPerExtension[ext]) numLinesPerExtension[ext] += lineCount;
-          else numLinesPerExtension[ext] = lineCount;
-        }
+  for await (const file of walkFiles(path, {
+    recursive,
+    excludeFolder: fileIgnorer(ignore),
+  })) {
+    const checkedExtension = isFittingExtension(
+      extensions.map(normalizeExtension),
+      file,
+    );
+    const checkedIgnoreList = !isIgnoredFile(file);
+
+    if (checkedExtension && checkedIgnoreList) {
+      logger.log(`Runner: Got file ${file}`);
+      const result = await countLines(file);
+      numFiles++;
+      numUsedLines += result.numUsed;
+      numBlankLines += result.numBlanks;
+      const ext = extname(file);
+      if (ext.length) {
+        if (numFilesPerExtension[ext]) numFilesPerExtension[ext] += 1;
+        else numFilesPerExtension[ext] = 1;
+
+        const lineCount = result.numUsed + result.numBlanks;
+        if (numLinesPerExtension[ext]) numLinesPerExtension[ext] += lineCount;
+        else numLinesPerExtension[ext] = lineCount;
       }
-      return false;
-    },
-  });
+    }
+  }
 
   logger.log(`All files done, composing result`);
 

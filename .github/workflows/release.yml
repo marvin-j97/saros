@@ -24,10 +24,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: NPM install
-        run: npm install
+        run: yarn
 
       - name: Build project
-        run: npm run build:all
+        run: yarn build:all
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v1-release
